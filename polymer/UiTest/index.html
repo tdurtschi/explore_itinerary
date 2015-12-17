@@ -19,7 +19,7 @@
   <link rel="import" href="bower_components/google-map/google-map-directions.html">
   <link rel="import" href="bower_components/iron-icons/maps-icons.html">
   <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-  <link rel="import" href="bower_components/paper-list-box/paper-list-box.html">
+  <link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
   
   <link rel="stylesheet" href="styles.css">
   
@@ -39,17 +39,28 @@
 </head>
 
 <body unresolved>
-  <template is="dom-bind">
+  <template id="app-data" is="dom-bind">
+    <script>
+      var template = document.querySelector('#app-data');
+      console.log(template);
+      template.features= [
+          {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892"},
+          {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892"},
+          {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
+      template.GetFeatureLatitudeByIndex=function(i){return template.features[i].latitude};
+      template.GetFeatureLongitudeByIndex=function(i){return template.features[i].longitude};
+    </script>
     <google-map
-      map="{{map}}"
-      latitude="37.779" 
-      longitude="-122.3892" 
+      latitude="[[GetFeatureLatitudeByIndex(currentFeatureIndex)]]" 
+      longitude="[[GetFeatureLongitudeByIndex(currentFeatureIndex)]]" 
       zoom="13">
-      <google-map-marker
-        latitude="37.779" 
-        longitude="-122.3892"
-        title="Go Giants!"
-        draggable="true"></google-map-marker>
+      <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+        <google-map-marker
+          latitude="{{feature.latitude}}" 
+          longitude="{{feature.longitude}}"
+          title="{{feature.name}}"
+          draggable="false"></google-map-marker>
+      </template>
     </google-map>
     <!-- inputs -->
     
@@ -57,16 +68,19 @@
       class="featuresPanel"
       heading="Day1 - Hotel California"
       elevation="2"><!--TODO - look into image header -->
-      <paper-list-box selected="{{currentFeature}}">
-        <paper-item>
-          <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-          <iron-label>Sally's Apizza</iron-label>
-        </paper-item>
-        <paper-item>
-          <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-          <iron-label>Pepe's Pizza Neopolitiana</iron-label>
-        </paper-item>
-      </paper-list-box>
+      <paper-listbox selected="{{currentFeatureIndex}}">
+        <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+          <paper-item>
+            <template is="dom-if" if="{{feature.category}}">
+              <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+            </template>
+            <template is="dom-if" if="{{!feature.category}}">
+              <iron-icon icon="maps:place" item-icon></iron-icon>
+            </template>
+            <iron-label>{{feature.name}}</iron-label>
+          </paper-item>
+        </template>
+      </paper-listbox>
     </paper-card>
   </template>
 </body>
