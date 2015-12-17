@@ -1,1 +1,8 @@
 bower_components/
+bin/
+obj/
+TestResults/
+*.suo
+*.user
+.nuget/
+packages/
