@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>UiTest</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/paper-item/paper-item.html">
+  <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+  <link rel="import" href="bower_components/paper-input/paper-input.html">
+  <link rel="import" href="bower_components/paper-card/paper-card.html">
+  <link rel="import" href="bower_components/google-map/google-map.html">
+  <link rel="import" href="bower_components/google-map/google-map-directions.html">
+  <link rel="import" href="bower_components/iron-icons/maps-icons.html">
+  <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="bower_components/paper-list-box/paper-list-box.html">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <style is="custom-style">
+    paper-tabs {
+      --paper-tabs-selection-bar-color: #0D47A1;
+      margin-top: 16px;
+    }
+    paper-tab {
+      --paper-tab-ink: #BBDEFB;
+    }
+    paper-card {
+      --paper-card-header-color: #ec008c
+    }
+
+  </style>
+</head>
+
+<body unresolved>
+  <template is="dom-bind">
+    <google-map
+      map="{{map}}"
+      latitude="37.779" 
+      longitude="-122.3892" 
+      zoom="13">
+      <google-map-marker
+        latitude="37.779" 
+        longitude="-122.3892"
+        title="Go Giants!"
+        draggable="true"></google-map-marker>
+    </google-map>
+    <!-- inputs -->
+    
+    <paper-card 
+      class="featuresPanel"
+      heading="Day1 - Hotel California"
+      elevation="2"><!--TODO - look into image header -->
+      <paper-list-box selected="{{currentFeature}}">
+        <paper-item>
+          <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+          <iron-label>Sally's Apizza</iron-label>
+        </paper-item>
+        <paper-item>
+          <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+          <iron-label>Pepe's Pizza Neopolitiana</iron-label>
+        </paper-item>
+      </paper-list-box>
+    </paper-card>
+  </template>
+</body>
+</html>
