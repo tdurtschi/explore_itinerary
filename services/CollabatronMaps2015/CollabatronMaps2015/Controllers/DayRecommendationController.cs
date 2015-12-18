@@ -15,7 +15,7 @@ namespace CollabatronMaps2015.Controllers
         {
             try
             {
-                var prodtour_id = Convert.ToInt32(id.Substring(0, id.IndexOf("-")));
+                var prodtour_id = Convert.ToInt32(id.Substring(0, id.IndexOf("|")));
                 var day = Convert.ToInt32(id.Substring(id.IndexOf("-") + 1));
 
                 return Json(new DataAccessManager().GetTourComponentForSpecificDay(prodTourId: prodtour_id, dayOfTour: day));

@@ -24,9 +24,8 @@ namespace Colabatron.DataAccess
                 Language = "en",
                 Location = new Location(lat,lon),
                 //RankBy = RankBy.Distance
-                Radius = 50000
-                ,
-                Types = ""
+                Radius = 5000,
+                Types = "airport|amusement_park|aquarium|art_gallery|atm|bank|bus_station|cafe|department_store|embassy|food|gas_station|hindu_temple|hospital|library|local_government_office|meal_delivery|mosque|museum|park|pharmacy|police|post_office|restaurant|shopping_mall|stadium|store|subway_station|taxi_stand|train_station|university|zoo"
                 
             };
             var result = GoogleMaps.Places.Query(request);

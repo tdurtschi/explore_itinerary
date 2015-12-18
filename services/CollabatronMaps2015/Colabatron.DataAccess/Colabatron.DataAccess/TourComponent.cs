@@ -2,7 +2,7 @@
 
 namespace Colabatron.DataAccess
 {
-    public class TourComponent
+    public class TourComponent :IAmAPlace
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -17,4 +17,5 @@ namespace Colabatron.DataAccess
         public decimal Duration { get; set; }
         public string TourCode { get; set; }
     }
+
 }
