@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="bower_components/iron-image/iron-image.html">
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
   <link rel="import" href="bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="bower_components/iron-icons/maps-icons.html">
@@ -44,6 +45,13 @@
       --iron-icon-width: 12px;
       --iron-icon-height: 12px;
     }
+    .fullWidth {
+      width: 100%;
+      --iron-image-width: 100%;
+    }
+    .fullHeight {
+      height:100%;
+    }
 
   </style>
 </head>
@@ -63,16 +71,12 @@
         {day:4,supplierCode:"PAR-01603"},
         {day:5,supplierCode:"FLR-00163"},
         {day:6,supplierCode:"ROM-00580"},
-        {day:7,supplierCode:"ROM-00580"}]
-      template.stateIsHome=true;
-      template.stateIsDay=false; 
+        {day:7,supplierCode:"ROM-00580"}];
       template.homeTitle="Explore Your Tour";
-      template.dayTitle="";
-      template.featureTitle="";
       //this will need to get set by a service call
       template.features = [
-        {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892"},
-        {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892"},
+        {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892",address:"100 wooster st, New Haven CT 06451",phone:"203-123-4567",imageUrl:"http://www.elizabethdorney.com/blog/wp-content/uploads/2009/10/pepes-pizza.jpg"},
+        {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892",address:"100 wooster st, New Haven CT 06451",phone:"203-234-5678",imageUrl:"http://s3-media4.fl.yelpcdn.com/bphoto/ZHnxNhD0XpFt9pkBh5LESA/o.jpg"},
         {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
       //this will need to get set via service call
       template.nearbys = [
@@ -96,71 +100,65 @@
           return template.homebase.longitude;
         }
       };
+      template.update= function(){
+        template.isHome= template.state == "home";
+        template.isDay= template.state == "day";
+        template.isHotel= template.state == "hotel";
+        template.isFeature= template.state == "featureFromHotel" ||template.state == "featureFromDay";
+        template.isFeatureWasHotel= template.state == "featureFromHotel";
+        template.isFeatureWasDay= template.state == "featureFromDay";
+        template.isNearby= template.state == "nearbyFromHotel" ||template.state == "nearbyFromDay";
+        template.isNearbyWasHotel= template.state == "nearbyFromHotel";
+        template.isNearbyWasDay= template.state == "nearbyFromDay";
+      }
+      template.state="home";
+      template.update();
+      
       template.homeClick = function(){
-        template.stateIsHome=true;
-        template.stateIsDay=false;
-        template.stateIsHotel=false;
-        template.stateIsFeatureWasHotel=false;
-        template.stateIsFeatureWasDay=false;
-        console.log("home");
+        template.state="home"
+        template.update();
       };
-      template.dayClick = function(i){
-        template.stateIsHome=false;
-        template.stateIsDay=true;
-        template.stateIsHotel=false;
-        template.stateIsFeatureWasHotel=false;
-        template.stateIsFeatureWasDay=false;
+      template.dayClick = function(){
+        template.state="day";
+        template.update();
         template.dayTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" - Other";
-        console.log("day: "+template.currentDayIndex);
       };
-      template.hotelClick = function(i){
-        template.stateIsHome=false;
-        template.stateIsDay=false;
-        template.stateIsHotel=true;
-        template.stateIsFeatureWasHotel=false;
-        template.stateIsFeatureWasDay=false;
+      template.hotelClick = function(){
+        template.state="hotel";
+        template.update();
         template.hotelTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" Hotel";
-        console.log("hotel: "+template.currentDayIndex);
       };
-      template.featureClick = function(){
-        if(template.stateIsDay){
-          template.stateIsFeatureWasDay=true;
+      template.dayFeatureClick = function(){
+        if(template.state=="day"){
+          template.state="featureFromDay";
         }
         else{
-          template.stateIsFeatureWasHotel=true;
+          template.state="featureFromHotel";
         }
-        template.stateIsHome=false;
-        template.stateIsDay=false;
-        template.stateIsHotel=false;
-        template.featureTitle=template.features[template.currentFeatureIndex].name
-        console.log("feature");
-      }
+        template.feature=template.features[template.currentFeatureIndex];
+        template.update();
+      };
       template.hotelFeatureClick = function(){
-        if(template.stateIsDay){
-          template.stateIsFeatureWasDay=true;
+        if(template.state=="day"){
+          template.state="featureFromDay";
         }
         else{
-          template.stateIsFeatureWasHotel=true;
+          template.state="featureFromHotel";
         }
-        template.stateIsHome=false;
-        template.stateIsDay=false;
-        template.stateIsHotel=false;
-        template.featureTitle=template.features[template.currentFeatureIndex-1].name
-        console.log("feature");
-      }
+        template.feature=template.features[template.currentFeatureIndex-1];
+        template.update();
+        console.log(template.feature);
+      };
       template.hotelNearbyClick = function(){
-        if(template.stateIsDay){
-          template.stateIsFeatureWasDay=true;
+        if(template.state=="day"){
+          template.state="nearbyFromDay";
         }
         else{
-          template.stateIsFeatureWasHotel=true;
+          template.state="nearbyFromHotel";
         }
-        template.stateIsHome=false;
-        template.stateIsDay=false;
-        template.stateIsHotel=false;
-        template.featureTitle=template.features[template.currentFeatureIndex-template.features.length-2].name
-        console.log("nearby");
-      }
+        template.nearby=template.features[template.currentFeatureIndex-template.features.length-2];
+        template.update();
+      };
       
     </script>
     
@@ -187,32 +185,38 @@
     <!-- inputs -->
     
     <paper-card 
-      class="featuresPanel"
+      class="featuresPanel blue"
       elevation="2"><!--TODO - look into image header -->
       <paper-header-panel mode="waterfall-tall" class="blue">
         <div class="paper-header">
-          <template is="dom-if" if="{{stateIsHome}}">
+          <template is="dom-if" if="{{isHome}}">
             <div class="headerNormal">{{homeTitle}}</div>
           </template>
-          <template is="dom-if" if="{{stateIsDay}}">
+          <template is="dom-if" if="{{isDay}}">
             <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
             <div class="headerNormal">{{dayTitle}}</div>
           </template>
-          <template is="dom-if" if="{{stateIsHotel}}">
+          <template is="dom-if" if="{{isHotel}}">
             <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
             <div class="headerNormal">{{hotelTitle}}</div>
           </template>
-          <template is="dom-if" if="{{stateIsFeatureWasDay}}">
+          <template is="dom-if" if="{{isFeatureWasDay}}">
             <paper-button raised on-click="dayClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{dayTitle}}</paper-button>
-            <div class="headerNormal">{{featureTitle}}</div>
+            <div class="headerNormal">{{feature.name}}</div>
           </template>
-          <template is="dom-if" if="{{stateIsFeatureWasHotel}}">
+          <template is="dom-if" if="{{isFeatureWasHotel}}">
             <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{hotelTitle}}</paper-button>
-            <div class="headerNormal">{{featureTitle}}</div>
+            <div class="headerNormal">{{feature.name}}</div>
+          </template>
+          <template is="dom-if" if="{{isFeature}}">
+            <iron-image class="fullWidth" src="{{feature.imageUrl}}"></iron-image>  
+          </template>
+          <template is="dom-if" if="{{isNearby}}">
+            <iron-image class="fullWidth" src="{{nearby.imageUrl}}"></iron-image>  
           </template>
         </div>
         <div class="content">
-          <template is="dom-if" if="{{stateIsHome}}">
+          <template is="dom-if" if="{{isHome}}">
             <paper-listbox selected="{{currentDayIndex}}">
               <template is="dom-repeat" items="{{days}}" as="day" index-as="i">
                 <iron-label class="textLg">Day - {{day.day}}</iron-label>
@@ -227,8 +231,8 @@
               </template>
             </paper-listbox>
           </template>
-          <template is="dom-if" if="{{stateIsDay}}">
-            <paper-listbox selected="{{currentFeatureIndex}}" on-click="featureClick">
+          <template is="dom-if" if="{{isDay}}">
+            <paper-listbox selected="{{currentFeatureIndex}}" on-click="dayFeatureClick">
               <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
                 <paper-item class="bigLine">
                   <template is="dom-if" if="{{feature.category}}">
@@ -242,7 +246,7 @@
               </template>
             </paper-listbox>
           </template>
-          <template is="dom-if" if="{{stateIsHotel}}">
+          <template is="dom-if" if="{{isHotel}}">
             <paper-listbox selected="{{currentFeatureIndex}}">
               <iron-label class="textLg">EF Recomendations</iron-label>
               <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
@@ -265,7 +269,18 @@
               </template>
             </paper-listbox>
           </template>
-          <template is="dom-if" if="{{stateIsFeatureWasDay}}"
+          <template is="dom-if" if="{{isFeature}}">
+            <div class="fullHeight">
+              <div class="mediumLine">
+                <iron-icon icon="maps:place" item-icon></iron-icon>
+                <iron-label>{{feature.address}}</iron-label>
+              </div>  
+              <div class="mediumLine">
+                <iron-icon icon="maps:local-phone" item-icon></iron-icon>
+                <iron-label>{{feature.phone}}</iron-label>
+              </div>  
+            </div>
+          </template>
         </div>
       </paper-header-panel>
     </paper-card>

@@ -12,6 +12,9 @@ paper-card {
 paper-card.featuresPanel {
   top: 50px;
 }
+paper-card.blue {
+  background: white;/*linear-gradient(white, #107db4);*/
+}
 paper-item {
   border-bottom: 1px solid #DDD;
 }
@@ -28,15 +31,16 @@ paper-button {
 paper-listbox paper-item {
   cursor:pointer;
 }
+iron-icon {
+  margin-right:10px;
+}
 .blue .paper-header {
   background-color:#107db4;
   color:#EFEFEF;
 }
-.blue .content {
-  background: linear-gradient(white, #107db4);
-}
 .content {
   margin-left:20px;
+  height:100%;
 }
 .paper-header {
   font-size: 18pt;
@@ -62,4 +66,7 @@ paper-listbox paper-item {
 }
 paper-listbox paper-item.bigLine {
   line-height: 80px;
+}
+.mediumLine {
+  line-height: 60px;
 }
