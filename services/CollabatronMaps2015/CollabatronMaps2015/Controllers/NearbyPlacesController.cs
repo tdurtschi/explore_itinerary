@@ -13,7 +13,10 @@ namespace CollabatronMaps2015.Controllers
     {
         public JsonResult<GoogleMapsApi.Entities.Places.Response.PlacesResponse> GetNearbyPlaces(string id)
         {
-            return Json(new GoogleMapsAccess().GetNearbyLocations(45.56758, -73.74075));
+
+            var lat = Convert.ToDouble(id.Substring(0, id.IndexOf("|")));
+            var lon = Convert.ToDouble(id.Substring(id.IndexOf("|") + 1));
+            return Json(new GoogleMapsAccess().GetNearbyLocations(lat, lon));
         }
     }
 }
