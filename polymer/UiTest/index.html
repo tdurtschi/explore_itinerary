@@ -10,6 +10,7 @@
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
   <link rel="import" href="bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="bower_components/paper-item/paper-item.html">
   <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
@@ -33,6 +34,23 @@
     }
     paper-card {
       --paper-card-header-color: #ec008c
+    }
+
+    .featuresPanel {
+      width:20%;
+    }
+
+    .item {
+      @apply(--layout-vertical);
+      font-size:15px;
+      margin: 5px;
+      padding: 5px;
+      background-color: white;
+      border-bottom: 2px solid #fff;
+    }
+
+    .name {
+      font-weight:bold;
     }
 
   </style>
@@ -63,21 +81,20 @@
       </template>
     </google-map>
     <!-- inputs -->
-    
+    <iron-ajax url="recommendations.json" last-response="{{recommendations}}" auto></iron-ajax>
     <paper-card 
       class="featuresPanel"
       heading="Day1 - Hotel California"
       elevation="2"><!--TODO - look into image header -->
       <paper-listbox selected="{{currentFeatureIndex}}">
-        <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+        <template is="dom-repeat" items="{{recommendations}}" as="item" index-as="i">
           <paper-item>
-            <template is="dom-if" if="{{feature.category}}">
-              <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-            </template>
-            <template is="dom-if" if="{{!feature.category}}">
-              <iron-icon icon="maps:place" item-icon></iron-icon>
-            </template>
-            <iron-label>{{feature.name}}</iron-label>
+            <div class="item">
+              <span class="name">[[item.Name]]</span>
+              <span class="recommendation">[[item.NumberOfRecomendations]] recommendations</span>
+              <div class="description">[[item.Description]]</div>
+              <div class="hours"></div>
+            </div>
           </paper-item>
         </template>
       </paper-listbox>
