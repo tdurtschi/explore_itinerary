@@ -37,7 +37,7 @@
     }
     paper-header-panel {
         float: left;
-        width: 240px;
+        width: 360px;
         @apply(--shadow-elevation-2dp);
     }
     .iconSm {
@@ -69,11 +69,17 @@
       template.homeTitle="Explore Your Tour";
       template.dayTitle="";
       template.featureTitle="";
-      template.features= [
-          {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892"},
-          {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892"},
-          {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
-      
+      //this will need to get set by a service call
+      template.features = [
+        {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892"},
+        {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892"},
+        {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
+      //this will need to get set via service call
+      template.nearbys = [
+        {name:"pharmacy"},
+        {name:"clothingStore"},
+        {name:"pharmacy2"},
+        {name:"chain resturant"}]
       template.GetFeatureLatitudeByIndex=function(i){
         if(i){
           return template.features[i].latitude;
@@ -93,23 +99,67 @@
       template.homeClick = function(){
         template.stateIsHome=true;
         template.stateIsDay=false;
-        template.stateIsFeature=false;
-        template.currentFeatureIndex=null;
+        template.stateIsHotel=false;
+        template.stateIsFeatureWasHotel=false;
+        template.stateIsFeatureWasDay=false;
         console.log("home");
       };
-      template.dayClick = function(){
+      template.dayClick = function(i){
         template.stateIsHome=false;
         template.stateIsDay=true;
-        template.stateIsFeature=false;
-        template.dayTitle="Day - "+template.days[currentDayIndex].day
-        console.log("day");
+        template.stateIsHotel=false;
+        template.stateIsFeatureWasHotel=false;
+        template.stateIsFeatureWasDay=false;
+        template.dayTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" - Other";
+        console.log("day: "+template.currentDayIndex);
       };
-      template.featureClick = function(){
+      template.hotelClick = function(i){
         template.stateIsHome=false;
         template.stateIsDay=false;
-        template.stateIsFeature=true;
-        template.feature=template.features[currentFeatureIndex].name
+        template.stateIsHotel=true;
+        template.stateIsFeatureWasHotel=false;
+        template.stateIsFeatureWasDay=false;
+        template.hotelTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" Hotel";
+        console.log("hotel: "+template.currentDayIndex);
+      };
+      template.featureClick = function(){
+        if(template.stateIsDay){
+          template.stateIsFeatureWasDay=true;
+        }
+        else{
+          template.stateIsFeatureWasHotel=true;
+        }
+        template.stateIsHome=false;
+        template.stateIsDay=false;
+        template.stateIsHotel=false;
+        template.featureTitle=template.features[template.currentFeatureIndex].name
         console.log("feature");
+      }
+      template.hotelFeatureClick = function(){
+        if(template.stateIsDay){
+          template.stateIsFeatureWasDay=true;
+        }
+        else{
+          template.stateIsFeatureWasHotel=true;
+        }
+        template.stateIsHome=false;
+        template.stateIsDay=false;
+        template.stateIsHotel=false;
+        template.featureTitle=template.features[template.currentFeatureIndex-1].name
+        console.log("feature");
+      }
+      template.hotelNearbyClick = function(){
+        if(template.stateIsDay){
+          template.stateIsFeatureWasDay=true;
+        }
+        else{
+          template.stateIsFeatureWasHotel=true;
+        }
+        template.stateIsHome=false;
+        template.stateIsDay=false;
+        template.stateIsHotel=false;
+        template.featureTitle=template.features[template.currentFeatureIndex-template.features.length-2].name
+        console.log("nearby");
       }
       
     </script>
@@ -145,41 +195,77 @@
             <div class="headerNormal">{{homeTitle}}</div>
           </template>
           <template is="dom-if" if="{{stateIsDay}}">
-            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>Explore</paper-button>
+            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
             <div class="headerNormal">{{dayTitle}}</div>
           </template>
-          <template is="dom-if" if="{{stateIsFeature}}">
-            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>Explore</paper-button>
+          <template is="dom-if" if="{{stateIsHotel}}">
+            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
+            <div class="headerNormal">{{hotelTitle}}</div>
+          </template>
+          <template is="dom-if" if="{{stateIsFeatureWasDay}}">
+            <paper-button raised on-click="dayClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{dayTitle}}</paper-button>
+            <div class="headerNormal">{{featureTitle}}</div>
+          </template>
+          <template is="dom-if" if="{{stateIsFeatureWasHotel}}">
+            <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{hotelTitle}}</paper-button>
             <div class="headerNormal">{{featureTitle}}</div>
           </template>
         </div>
         <div class="content">
           <template is="dom-if" if="{{stateIsHome}}">
-            <paper-listbox selected="{{currentDayIndex}}" on-click="dayClick">
-            <template is="dom-repeat" items="{{days}}" as="day" index-as="i">
-              <paper-item>
-                <iron-label class="textLg">Day - {{day.day}}</iron-lavel>
-                <iron-icon icon="maps:local-hotel" item-icon></iron-icon>
-                <iron-label>Hotel</iron-label>
-              </paper-item>
-            </template>
-          </paper-listbox>
+            <paper-listbox selected="{{currentDayIndex}}">
+              <template is="dom-repeat" items="{{days}}" as="day" index-as="i">
+                <iron-label class="textLg">Day - {{day.day}}</iron-label>
+                <paper-item on-click="hotelClick">
+                  <iron-icon icon="maps:local-hotel"></iron-icon>
+                  <iron-label>Near Your Hotel</iron-label>
+                </paper-item>
+                <paper-item on-click="dayClick">
+                  <iron-icon icon="maps:local-activity"></iron-icon>
+                  <iron-label>Other Attractions</iron-label>
+                </paper-item>
+              </template>
+            </paper-listbox>
           </template>
           <template is="dom-if" if="{{stateIsDay}}">
             <paper-listbox selected="{{currentFeatureIndex}}" on-click="featureClick">
-            <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
-              <paper-item>
-                <template is="dom-if" if="{{feature.category}}">
-                  <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-                </template>
-                <template is="dom-if" if="{{!feature.category}}">
-                  <iron-icon icon="maps:place" item-icon></iron-icon>
-                </template>
-                <iron-label>{{feature.name}}</iron-label>
-              </paper-item>
-            </template>
-          </paper-listbox>
+              <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+                <paper-item class="bigLine">
+                  <template is="dom-if" if="{{feature.category}}">
+                    <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+                  </template>
+                  <template is="dom-if" if="{{!feature.category}}">
+                    <iron-icon icon="maps:place" item-icon></iron-icon>
+                  </template>
+                  <iron-label>{{feature.name}}</iron-label>
+               </paper-item>
+              </template>
+            </paper-listbox>
           </template>
+          <template is="dom-if" if="{{stateIsHotel}}">
+            <paper-listbox selected="{{currentFeatureIndex}}">
+              <iron-label class="textLg">EF Recomendations</iron-label>
+              <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+                <paper-item on-click="hotelFeatureClick" class="bigLine">
+                  <template is="dom-if" if="{{feature.category}}">
+                    <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+                  </template>
+                  <template is="dom-if" if="{{!feature.category}}">
+                    <iron-icon icon="maps:place" item-icon></iron-icon>
+                  </template>
+                  <iron-label>{{feature.name}}</iron-label>
+               </paper-item>
+              </template>
+              <iron-label class="textLg">Nearby Results</iron-label>
+              <template is="dom-repeat" items="{{nearbys}}" as="nearby" index-as="i">
+                <paper-item on-click="hotelNearbyClick" class="bigLine">
+                  <iron-icon icon="maps:place" item-icon></iron-icon>
+                  <iron-label>{{nearby.name}}</iron-label>
+               </paper-item>
+              </template>
+            </paper-listbox>
+          </template>
+          <template is="dom-if" if="{{stateIsFeatureWasDay}}"
         </div>
       </paper-header-panel>
     </paper-card>

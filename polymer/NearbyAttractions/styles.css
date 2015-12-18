@@ -12,6 +12,9 @@ paper-card {
 paper-card.featuresPanel {
   top: 50px;
 }
+paper-item {
+  border-bottom: 1px solid #DDD;
+}
 paper-tab iron-icon {
   margin-right: 10px;
 }
@@ -32,21 +35,31 @@ paper-listbox paper-item {
 .blue .content {
   background: linear-gradient(white, #107db4);
 }
+.content {
+  margin-left:20px;
+}
 .paper-header {
-  font-size: 16px;
+  font-size: 18pt;
   padding: 0 10px;
   color: white;
   transition: height 0.2s;
 }
 .buttonSm {
-  font-size: 12px;
+  font-size: 10pt;
 }
 .headerSm {
-  line-height: 15px;
+  line-height: 12px;
 }
 .headerNormal {
-  line-height: 60px;
+  line-height: 120px;
+  font-weight: bold;
+  font-size: 18pt;
 }
 .textLg {
-  font-size: 16px;
+  font-size: 16pt;
+  font-weight: bold;
+  color: #107db4;
+}
+paper-listbox paper-item.bigLine {
+  line-height: 80px;
 }
