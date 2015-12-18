@@ -31,6 +31,7 @@ namespace CollabatronMaps2015.Controllers
                 gc.Name = n.Name;
                 gc.GoogleId = n.PlaceId;
                 gc.Icon = n.Icon;
+                gc.Rating = n.Rating;
                 returnList.Add(gc);
             }
             var count = returnList.Count;

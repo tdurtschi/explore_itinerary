@@ -14,5 +14,6 @@ namespace Colabatron.DataAccess
         public string Name { get; set; }
         public string GoogleId { get; set; }
         public string Icon { get; set; }
+        public double Rating { get; set; }
     }
 }

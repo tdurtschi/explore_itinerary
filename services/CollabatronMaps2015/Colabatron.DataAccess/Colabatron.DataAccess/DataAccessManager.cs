@@ -82,7 +82,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Latin American",
                 NumberOfRecomendations = 4,
                 Description = "Vibrant Latin American chain restaurant",
-                Hours = "Open until 11:00 PM"
+                Hours = "Open until 11:00 PM",
+                Latitude = -2.123811,
+                Longitude = -79.575830
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -95,7 +97,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Brazilian",
                 NumberOfRecomendations = 3,
                 Description = "Grilled Brazilian skewers and street food",
-                Hours = "Open until 10:30 PM"
+                Hours = "Open until 10:30 PM",
+                Latitude = 51.556486,
+                Longitude = -0.283132
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -108,7 +112,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Chinese",
                 NumberOfRecomendations = 6,
                 Description = null,
-                Hours = "Open until 10:30 PM"
+                Hours = "Open until 10:30 PM",
+                Latitude = 53.367174,
+                Longitude = -0.001614
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -121,7 +127,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Sport",
                 NumberOfRecomendations = 10,
                 Description = "Landmark venue hosting major football matches including FA Cup Final and international matches.",
-                Hours = null
+                Hours = null,
+                Latitude = 51.556021,
+                Longitude = -0.279519
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -134,7 +142,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Movie Theater",
                 NumberOfRecomendations = 3,
                 Description = "Multiplex cinema",
-                Hours = null
+                Hours = null,
+                Latitude = 51.556900,
+                Longitude = -0.282600
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -147,7 +157,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = null,
                 NumberOfRecomendations = 13,
                 Description = null,
-                Hours = "Open until 10:30 PM"
+                Hours = "Open until 10:30 PM",
+                Latitude = 48.827841,
+                Longitude = 2.702500
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -160,7 +172,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Italian",
                 NumberOfRecomendations = 10,
                 Description = null,
-                Hours = "Open until 11:00 PM "
+                Hours = "Open until 11:00 PM ",
+                Latitude = 48.839198,
+                Longitude = 2.710247
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -173,7 +187,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Amusement Park",
                 NumberOfRecomendations = 15,
                 Description = "Theme park complex featuring family-friendly rides, shows and costumed characters, plus hotels.",
-                Hours = null
+                Hours = null,
+                Latitude = 48.871900,
+                Longitude = 2.776623
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -186,7 +202,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Italian",
                 NumberOfRecomendations = 6,
                 Description = "Authentic Italian restaurant",
-                Hours = "Open until 10:00 PM"
+                Hours = "Open until 10:00 PM",
+                Latitude = 43.769994,
+                Longitude = 11.262264
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -199,7 +217,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Italian",
                 NumberOfRecomendations = 2,
                 Description = "Down home cooking restaurant",
-                Hours = null
+                Hours = null,
+                Latitude = 43.776326,
+                Longitude = 11.254383
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -212,7 +232,10 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Landmark",
                 NumberOfRecomendations = 12,
                 Description = "Historic museum featuring sculptures by Michelangelo and Donatello",
-                Hours = "Opens at 9:00 AM"
+                Hours = "Opens at 9:00 AM",
+                Latitude = 43.772861,
+                Longitude = 11.257766
+                
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -225,7 +248,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Landmark",
                 NumberOfRecomendations = 15,
                 Description = "Landmark 1200s cathedral known for its red-tiled dome, colored marble facade & elegant Giotto tower.",
-                Hours = "Opens at 10:00 AM"
+                Hours = "Opens at 10:00 AM",
+                Latitude = 43.773460,
+                Longitude = 11.255985
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -238,7 +263,10 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Spanish",
                 NumberOfRecomendations = 8,
                 Description = "Candlelit Spanish restaurant for rustic paella, grilled lobster & Iberian wines, plus live flamenco.",
-                Hours = "Open until 12:00 AM"
+                Hours = "Open until 12:00 AM",
+                Latitude = 41.949612,
+                Longitude = 12.526384
+               
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -251,7 +279,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Pizza",
                 NumberOfRecomendations = 9,
                 Description = null,
-                Hours = null
+                Hours = null,
+                Latitude = 39.829915,
+                Longitude = 16.205884
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -264,7 +294,9 @@ WHERE s.SupplierCode = '{0}'
                 SecondaryCategory = "Landmark",
                 NumberOfRecomendations = 12,
                 Description = "A 13km network of tombs & chapel dug into volcanic rock richly decorated with stucco & artwork.",
-                Hours = "Opens at 8:30 AM"
+                Hours = "Opens at 8:30 AM",
+                Latitude = 42.011281,
+                Longitude = 12.518367
             });
         }
 
