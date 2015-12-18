@@ -14,6 +14,7 @@ namespace CollabatronMaps2015.Controllers
         public JsonResult<GoogleMapsApi.Entities.PlacesDetails.Response.PlacesDetailsResponse> GetPlaceDetails(string id)
         {
             var mgr = new GoogleMapsAccess();
+            var details = mgr.GetPlaceDetails(id);
             return Json(mgr.GetPlaceDetails(id));
         } 
     }

@@ -11,12 +11,30 @@ namespace CollabatronMaps2015.Controllers
 {
     public class NearbyPlacesController : ApiController
     {
-        public JsonResult<GoogleMapsApi.Entities.Places.Response.PlacesResponse> GetNearbyPlaces(string id)
+        public JsonResult<List<GoogleComponent>> GetNearbyPlaces(string id)
         {
+            var dataAccessManager = new DataAccessManager();
+            Tuple<double, double> hotelLatLong = dataAccessManager.GetHotelLocation(id);
 
-            var lat = Convert.ToDouble(id.Substring(0, id.IndexOf("|")));
-            var lon = Convert.ToDouble(id.Substring(id.IndexOf("|") + 1));
-            return Json(new GoogleMapsAccess().GetNearbyLocations(lat, lon));
+            var mgr = new GoogleMapsAccess();
+            var result = mgr.GetNearbyLocations(hotelLatLong.Item1, hotelLatLong.Item2);
+
+            var returnList = new List<GoogleComponent>();
+
+            foreach (var n in result.Results)
+            {
+                var deet = mgr.GetPlaceDetails(n.PlaceId);
+                var gc = new GoogleComponent();
+                gc.Address = deet.Result.FormattedAddress;
+                gc.Latitude = n.Geometry.Location.Latitude;
+                gc.Longitude = n.Geometry.Location.Longitude;
+                gc.Name = n.Name;
+                gc.GoogleId = n.PlaceId;
+                gc.Icon = n.Icon;
+                returnList.Add(gc);
+            }
+            var count = returnList.Count;
+            return Json(returnList);
         }
     }
 }

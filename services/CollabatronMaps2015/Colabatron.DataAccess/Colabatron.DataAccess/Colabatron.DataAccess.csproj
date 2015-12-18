@@ -49,7 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccessManager.cs" />
+    <Compile Include="GoogleComponent.cs" />
     <Compile Include="GoogleMapsAccess.cs" />
+    <Compile Include="IAmAPlace.cs" />
     <Compile Include="RecommendedLocation.cs" />
     <Compile Include="TourComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
