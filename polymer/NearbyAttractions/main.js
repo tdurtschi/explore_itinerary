@@ -8,7 +8,7 @@ function updateState(t){
   t.isNearby= t.state == "nearbyFromHotel" ||t.state == "nearbyFromDay";
   t.isNearbyWasHotel= t.state == "nearbyFromHotel";
   t.isNearbyWasDay= t.state == "nearbyFromDay";
-  
+  t.isFeatureOrNearby = t.isNearby || t.isFeature;
   if(t.isHome){
     t.currentZoom = t.options.homeZoom;
     t.currentLatitude = t.homebase.latitude;
@@ -16,23 +16,23 @@ function updateState(t){
   }
   else if(t.isDay){
     t.currentZoom = t.options.dayZoom;
-    t.currentLatitude = t.day.dayLatitude;
-    t.currentLongitude = t.day.dayLongitude;
+    t.currentLatitude = t.day.hotel.Latitude;
+    t.currentLongitude = t.day.hotel.Longitude;
   }
   else if(t.isHotel){
     t.currentZoom = t.options.hotelZoom;
-    t.currentLatitude = t.day.hotelLatitude;
-    t.currentLongitude = t.day.hotelLongitude;
+    t.currentLatitude = t.day.hotel.Latitude;
+    t.currentLongitude = t.day.hotel.Longitude;
   }
   else if(t.isFeature){
     t.currentZoom = t.options.featureZoom;
-    t.currentLatitude = t.feature.latitude;
-    t.currentLongitude = t.feature.longitude;
+    t.currentLatitude = t.feature.Latitude;
+    t.currentLongitude = t.feature.Longitude;
   }
   else if(t.isNearby){
     t.currentZoom = t.options.featureZoom;
-    t.currentLatitude = t.nearby.latitude;
-    t.currentLongitude = t.nearby.longitude;
+    t.currentLatitude = t.nearby.Latitude;
+    t.currentLongitude = t.nearby.Longitude;
   }
 }
 

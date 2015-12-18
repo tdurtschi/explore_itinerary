@@ -16,8 +16,10 @@ paper-card.blue {
   background: white;/*linear-gradient(white, #107db4);*/
 }
 paper-item {
-  border-bottom: 3px solid #DDD;
-  padding-left:8px;
+  border-bottom: 2px solid #888;
+  padding-left:0;
+  margin-bottom:5px;
+  padding-left:35px;
 }
 
 .recommended-item {
@@ -41,12 +43,14 @@ paper-listbox paper-item {
 iron-icon {
   margin-right:10px;
 }
+iron-label.textLg {
+  margin-left:15px;
+}
 .blue .paper-header {
   background-color:#107db4;
   color:#EFEFEF;
 }
 .content {
-  margin-left:20px;
   height:100%;
 }
 .paper-header {

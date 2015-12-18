@@ -41,7 +41,7 @@
     }
     paper-header-panel {
         float: left;
-        width: 360px;
+        width: 400px;
         @apply(--shadow-elevation-2dp);
     }
     .iconSm {
@@ -54,8 +54,12 @@
     }
     .fullHeight {
       height:100%;
+      --iron-image-height: 100%;
     }
-
+    .pull-right {
+      float:right;
+      display:flex;
+    }
 
     .item {
       @apply(--layout-vertical);
@@ -77,6 +81,10 @@
       font-size:11px;
       line-height:15px;
     }
+    .description {
+      font-size:12pt;
+      line-height:30px;
+    }
 
     .hours {
       font-size:11px;
@@ -90,23 +98,13 @@
   <template id="app-data" is="dom-bind">
     <script>
       var template = document.querySelector('#app-data');
-      template.options = {nearbyRadius:5000,homeZoom:8,dayZoom:11,hotelZoom:12,featureZoom:14};
-      template.homebase = {latitude:"51.5588",longitude:"-0.2849466"};
+      template.options = {nearbyRadius:5000,homeZoom:7,dayZoom:9,hotelZoom:9,featureZoom:13};
+      template.homebase = {latitude:"50",longitude:"1"};
       template.prodId = "146586"
       template.days = [];
       template.homeTitle="Explore Your Tour";
       //this will need to get set by a service call
-      template.features = [
-        {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892",address:"100 wooster st, New Haven CT 06451",phone:"203-123-4567",imageUrl:"http://www.elizabethdorney.com/blog/wp-content/uploads/2009/10/pepes-pizza.jpg"},
-        {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892",address:"100 wooster st, New Haven CT 06451",phone:"203-234-5678",imageUrl:"http://s3-media4.fl.yelpcdn.com/bphoto/ZHnxNhD0XpFt9pkBh5LESA/o.jpg"},
-        {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
-      //this will need to get set via service call
-      template.nearbys = [
-        {name:"pharmacy"},
-        {name:"clothingStore"},
-        {name:"pharmacy2"},
-        {name:"chain resturant"}]
-        
+      
       template.state="home";
       updateState(template);
       
@@ -187,7 +185,7 @@
         return data;
       }
       template.loadDayFeatures = function(data){
-        console.log('hotel features')
+        console.log('day hotel features')
         template.features=data;
         console.log(data);
         return data;
@@ -205,6 +203,7 @@
         return false;
       }
     </script>
+    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/Recommendation" last-response={{allRecs}} auto></iron-ajax>
     <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/TripInfo/{{prodId}}" last-response="{{tripInfoResponse}}" auto></iron-ajax>
     <google-map
       latitude="[[currentLatitude]]" 
@@ -217,7 +216,7 @@
           title="{{feature.Name}}"
           draggable="false"></google-map-marker>
       </template>
-      <template is="dom-repeat" items="{{loadHotelFeatures(hotelRecResponse)}}" as="feature" index-as="i">
+      <template is="dom-repeat" items="{{allRecs}}" as="feature" index-as="i">
         <google-map-marker
           latitude="{{feature.Latitude}}" 
           longitude="{{feature.Longitude}}"
@@ -247,10 +246,18 @@
             <div class="headerNormal">{{hotelTitle}}</div>
           </template>
           <template is="dom-if" if="{{isFeatureWasDay}}">
-            <paper-button raised on-click="dayClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{dayTitle}}</paper-button>
+            <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{dayTitle}}</paper-button>
+            <div class="headerNormal">{{feature.name}}</div>
+          </template>
+          <template is="dom-if" if="{{isNearbyWasDay}}">
+            <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{dayTitle}}</paper-button>
             <div class="headerNormal">{{feature.name}}</div>
           </template>
           <template is="dom-if" if="{{isFeatureWasHotel}}">
+            <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{hotelTitle}}</paper-button>
+            <div class="headerNormal">{{feature.name}}</div>
+          </template>
+          <template is="dom-if" if="{{isNearbyWasHotel}}">
             <paper-button raised on-click="hotelClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{hotelTitle}}</paper-button>
             <div class="headerNormal">{{feature.name}}</div>
           </template>
@@ -270,7 +277,7 @@
                   <iron-icon icon="maps:local-hotel"></iron-icon>
                   <iron-label>Near - {{day.hotel.Name}}</iron-label>
                 </paper-item>
-                <paper-item on-click="dayClick">
+                <paper-item on-click="hotelClick">
                   <iron-icon icon="maps:local-activity"></iron-icon>
                   <iron-label>Other Attractions</iron-label>
                 </paper-item>
@@ -296,6 +303,9 @@
                     </div>
                     <div class="description">[[feature.Description]]</div>
                     <div class="hours">[[feature.Hours]]</div>
+                    <div class="pull-right">
+                      <iron-image class="fullHeight" src="[[feature.ImageUrl]]"></iron-image> 
+                    </div>
                   </div>
                </paper-item>
               </template>
@@ -321,6 +331,9 @@
                     </div>
                     <div class="description">[[feature.Description]]</div>
                     <div class="hours">[[feature.Hours]]</div>
+                    <div class="pull-right">
+                      <iron-image class="fullHeight" src="[[feature.ImageUrl]]"></iron-image> 
+                    </div>
                   </div>
                </paper-item>
               </template>
@@ -334,8 +347,11 @@
                       </span>
                       <span class="name">[[nearby.Name]]</span>
                     </div>
-                    <div class="description">[[feature.Description]]</div>
-                    <div class="hours">[[feature.Hours]]</div>
+                    <div class="description">[[nearby.Description]]</div>
+                    <div class="hours">[[nearby.Hours]]</div>
+                    <div class="pull-right">
+                      <iron-image class="fullHeight" src="[[nearby.ImageUrl]]"></iron-image> 
+                    </div>
                   </div>
                </paper-item>
               </template>
@@ -345,12 +361,30 @@
             <div class="fullHeight">
               <div class="mediumLine">
                 <iron-icon icon="maps:place" item-icon></iron-icon>
-                <iron-label>{{feature.address}}</iron-label>
+                <iron-label>{{feature.Address}}</iron-label>
               </div>  
               <div class="mediumLine">
                 <iron-icon icon="maps:local-phone" item-icon></iron-icon>
-                <iron-label>{{feature.phone}}</iron-label>
+                <iron-label>{{feature.Phone}}</iron-label>
               </div>  
+              <div class="mediumLine">
+                <iron-label>{{feature.Description}}</iron-label>
+              </div>  
+            </div>
+          </template>
+          <template is="dom-if" if="{{isNearby}}">
+            <div class="fullHeight">
+              <div class="mediumLine">
+                <iron-icon icon="maps:place" item-icon></iron-icon>
+                <iron-label>{{nearby.Address}}</iron-label>
+              </div>  
+              <div class="mediumLine">
+                <iron-icon icon="maps:local-phone" item-icon></iron-icon>
+                <iron-label>{{nearby.Phone}}</iron-label>
+              </div>  
+              <div class="mediumLine">
+                <iron-label>{{nearby.Description}}</iron-label>
+              </div> 
             </div>
           </template>
         </div>
