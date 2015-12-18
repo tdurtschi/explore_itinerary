@@ -303,38 +303,7 @@ AND sa.Longitude IS NOT NULL
             if (dayOfTour > 0)
             {
 
-                var result = new List<TourComponent>();
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    connection.Open();
-                    SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = string.Format(_getTourComponentsQuery, prodTourId);
-
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var component = new TourComponent();
-
-                            component.Id = reader.GetInt32(0);
-                            component.Name = reader.GetString(1).Trim();
-                            component.ComponentType = reader.GetString(2).Trim();
-                            component.SupplierCode = reader.GetString(3).Trim();
-
-                            component.Address = buildAddress(reader);
-                            component.StartDate = reader.GetDateTime(11);
-                            component.EndDate = reader.GetDateTime(12);
-                            component.Latitude = reader.GetDouble(13);
-                            component.Longitude = reader.GetDouble(14);
-                            component.StartDay = reader.GetInt32(15);
-                            component.Duration = reader.GetDecimal(16);
-                            component.TourCode = reader.GetString(17);
-
-                            result.Add(component);
-                        }
-                    }
-                }
+                var result = GetTourComponents(prodTourId); 
                 var exactComponent = GetExactComponentByTourDay(dayOfTour, result);
 
                 return exactComponent;
