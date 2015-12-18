@@ -1,0 +1,188 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>Walkabout</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/iron-icons/maps-icons.html">
+  <link rel="import" href="bower_components/paper-item/paper-item.html">
+  <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+  <link rel="import" href="bower_components/paper-input/paper-input.html">
+  <link rel="import" href="bower_components/paper-card/paper-card.html">
+  <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+  <link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+  <link rel="import" href="bower_components/google-map/google-map.html">
+  <link rel="import" href="bower_components/google-map/google-map-directions.html">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <style is="custom-style">
+    paper-tabs {
+      --paper-tabs-selection-bar-color: #0D47A1;
+      margin-top: 16px;
+    }
+    paper-tab {
+      --paper-tab-ink: #BBDEFB;
+    }
+    paper-card {
+      --paper-card-header-color: #ec008c
+    }
+    paper-header-panel {
+        float: left;
+        width: 240px;
+        @apply(--shadow-elevation-2dp);
+    }
+    .iconSm {
+      --iron-icon-width: 12px;
+      --iron-icon-height: 12px;
+    }
+
+  </style>
+</head>
+
+<body unresolved>
+  <template id="app-data" is="dom-bind">
+    <script>
+      var template = document.querySelector('#app-data');
+      console.log(template);
+      template.options = {radius:5000};
+      template.homebase = {latitude:"37.779",longitude:"-122.3892"};
+      template.prodId = "165470"
+      template.days = [
+        {day:1,supplierCode:"LON-03762"},
+        {day:2,supplierCode:"LON-03762"},
+        {day:3,supplierCode:"PAR-01603"},
+        {day:4,supplierCode:"PAR-01603"},
+        {day:5,supplierCode:"FLR-00163"},
+        {day:6,supplierCode:"ROM-00580"},
+        {day:7,supplierCode:"ROM-00580"}]
+      template.stateIsHome=true;
+      template.stateIsDay=false; 
+      template.homeTitle="Explore Your Tour";
+      template.dayTitle="";
+      template.featureTitle="";
+      template.features= [
+          {category:'pizza',name:'Pepe\'s Pizzaria Neopoliana',description:"great pizza, now in chestnut hill!",latitude:"34.779",longitude:"-124.3892"},
+          {category:'pizza',name:'Salley\'s Apizza',latitude:"38.779",longitude:"-123.3892"},
+          {category:'',name:'check this out',latitude:"36.779",longitude:"-121.3892"}];
+      
+      template.GetFeatureLatitudeByIndex=function(i){
+        if(i){
+          return template.features[i].latitude;
+        }
+        else{
+          return template.homebase.latitude;
+        }
+      };
+      template.GetFeatureLongitudeByIndex=function(i){
+        if(i){
+          return template.features[i].longitude;    
+        }
+        else{
+          return template.homebase.longitude;
+        }
+      };
+      template.homeClick = function(){
+        template.stateIsHome=true;
+        template.stateIsDay=false;
+        template.stateIsFeature=false;
+        template.currentFeatureIndex=null;
+        console.log("home");
+      };
+      template.dayClick = function(){
+        template.stateIsHome=false;
+        template.stateIsDay=true;
+        template.stateIsFeature=false;
+        template.dayTitle="Day - "+template.days[currentDayIndex].day
+        console.log("day");
+      };
+      template.featureClick = function(){
+        template.stateIsHome=false;
+        template.stateIsDay=false;
+        template.stateIsFeature=true;
+        template.feature=template.features[currentFeatureIndex].name
+        console.log("feature");
+      }
+      
+    </script>
+    
+    <google-map
+      map="{{map}}"
+      latitude="[[GetFeatureLatitudeByIndex(currentFeatureIndex)]]" 
+      longitude="[[GetFeatureLongitudeByIndex(currentFeatureIndex)]]" 
+      zoom="13">
+      <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+        <google-map-marker
+          latitude="{{feature.latitude}}" 
+          longitude="{{feature.longitude}}"
+          title="{{feature.name}}"
+          draggable="false"></google-map-marker>
+      </template>
+      <template is="dom-repeat" items="{{results}}" as="marker">
+        <google-map-marker latitude="{{marker.latitude}}"
+                         longitude="{{marker.longitude}}">
+        <h2>{{marker.name}}</h2>
+        <span>{{marker.formatted_address}}</span>
+      </google-map-marker>
+    </template>
+    </google-map>
+    <!-- inputs -->
+    
+    <paper-card 
+      class="featuresPanel"
+      elevation="2"><!--TODO - look into image header -->
+      <paper-header-panel mode="waterfall-tall" class="blue">
+        <div class="paper-header">
+          <template is="dom-if" if="{{stateIsHome}}">
+            <div class="headerNormal">{{homeTitle}}</div>
+          </template>
+          <template is="dom-if" if="{{stateIsDay}}">
+            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>Explore</paper-button>
+            <div class="headerNormal">{{dayTitle}}</div>
+          </template>
+          <template is="dom-if" if="{{stateIsFeature}}">
+            <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>Explore</paper-button>
+            <div class="headerNormal">{{featureTitle}}</div>
+          </template>
+        </div>
+        <div class="content">
+          <template is="dom-if" if="{{stateIsHome}}">
+            <paper-listbox selected="{{currentDayIndex}}" on-click="dayClick">
+            <template is="dom-repeat" items="{{days}}" as="day" index-as="i">
+              <paper-item>
+                <iron-label class="textLg">Day - {{day.day}}</iron-lavel>
+                <iron-icon icon="maps:local-hotel" item-icon></iron-icon>
+                <iron-label>Hotel</iron-label>
+              </paper-item>
+            </template>
+          </paper-listbox>
+          </template>
+          <template is="dom-if" if="{{stateIsDay}}">
+            <paper-listbox selected="{{currentFeatureIndex}}" on-click="featureClick">
+            <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+              <paper-item>
+                <template is="dom-if" if="{{feature.category}}">
+                  <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+                </template>
+                <template is="dom-if" if="{{!feature.category}}">
+                  <iron-icon icon="maps:place" item-icon></iron-icon>
+                </template>
+                <iron-label>{{feature.name}}</iron-label>
+              </paper-item>
+            </template>
+          </paper-listbox>
+          </template>
+        </div>
+      </paper-header-panel>
+    </paper-card>
+  </template>
+</body>
+</html>

@@ -1,0 +1,52 @@
+body, html {
+  font-family: 'Roboto', Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+}
+paper-card {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  z-index: 1;
+}
+paper-card.featuresPanel {
+  top: 50px;
+}
+paper-tab iron-icon {
+  margin-right: 10px;
+}
+paper-tab.iron-selected {
+  background: rgb(66, 133, 244);
+  color: white;
+}
+paper-button {
+  cursor:pointer;
+}
+paper-listbox paper-item {
+  cursor:pointer;
+}
+.blue .paper-header {
+  background-color:#107db4;
+  color:#EFEFEF;
+}
+.blue .content {
+  background: linear-gradient(white, #107db4);
+}
+.paper-header {
+  font-size: 16px;
+  padding: 0 10px;
+  color: white;
+  transition: height 0.2s;
+}
+.buttonSm {
+  font-size: 12px;
+}
+.headerSm {
+  line-height: 15px;
+}
+.headerNormal {
+  line-height: 60px;
+}
+.textLg {
+  font-size: 16px;
+}
