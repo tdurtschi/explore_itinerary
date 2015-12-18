@@ -60,18 +60,17 @@
   <template id="app-data" is="dom-bind">
     <script>
       var template = document.querySelector('#app-data');
-      console.log(template);
-      template.options = {radius:5000};
+      template.options = {nearbyRadius:5000,homeZoom:10,dayZoom:11,hotelZoom:12,featureZoom:14};
       template.homebase = {latitude:"37.779",longitude:"-122.3892"};
       template.prodId = "165470"
       template.days = [
-        {day:1,supplierCode:"LON-03762"},
-        {day:2,supplierCode:"LON-03762"},
-        {day:3,supplierCode:"PAR-01603"},
-        {day:4,supplierCode:"PAR-01603"},
-        {day:5,supplierCode:"FLR-00163"},
-        {day:6,supplierCode:"ROM-00580"},
-        {day:7,supplierCode:"ROM-00580"}];
+        {day:1,supplierCode:"LON-03762",hotelLatitude:"38.729",hotelLongitude:"-124.3534",dayLatitude:"38.729",dayLongitude:"-124.3534"},
+        {day:2,supplierCode:"LON-03762",hotelLatitude:"38.739",hotelLongitude:"-124.3544",dayLatitude:"37.729",dayLongitude:"-124.3534"},
+        {day:3,supplierCode:"PAR-01603",hotelLatitude:"38.749",hotelLongitude:"-124.3554",dayLatitude:"36.729",dayLongitude:"-124.3534"},
+        {day:4,supplierCode:"PAR-01603",hotelLatitude:"38.759",hotelLongitude:"-124.3564",dayLatitude:"35.729",dayLongitude:"-124.3534"},
+        {day:5,supplierCode:"FLR-00163",hotelLatitude:"38.769",hotelLongitude:"-124.3574",dayLatitude:"34.729",dayLongitude:"-124.3534"},
+        {day:6,supplierCode:"ROM-00580",hotelLatitude:"38.779",hotelLongitude:"-124.3584",dayLatitude:"33.729",dayLongitude:"-124.3534"},
+        {day:7,supplierCode:"ROM-00580",hotelLatitude:"38.789",hotelLongitude:"-124.3594",dayLatitude:"32.729",dayLongitude:"-124.3534"}];
       template.homeTitle="Explore Your Tour";
       //this will need to get set by a service call
       template.features = [
@@ -84,6 +83,7 @@
         {name:"clothingStore"},
         {name:"pharmacy2"},
         {name:"chain resturant"}]
+      /*
       template.GetFeatureLatitudeByIndex=function(i){
         if(i){
           return template.features[i].latitude;
@@ -100,7 +100,9 @@
           return template.homebase.longitude;
         }
       };
+      */
       template.update= function(){
+        
         template.isHome= template.state == "home";
         template.isDay= template.state == "day";
         template.isHotel= template.state == "hotel";
@@ -110,6 +112,32 @@
         template.isNearby= template.state == "nearbyFromHotel" ||template.state == "nearbyFromDay";
         template.isNearbyWasHotel= template.state == "nearbyFromHotel";
         template.isNearbyWasDay= template.state == "nearbyFromDay";
+        
+        if(template.isHome){
+          template.currentZoom = template.options.homeZoom;
+          template.currentLatitude = template.homebase.latitude;
+          template.currentLongitude = template.homebase.longitude;
+        }
+        else if(template.isDay){
+          template.currentZoom = template.options.dayZoom;
+          template.currentLatitude = template.day.dayLatitude;
+          template.currentLongitude = template.day.dayLongitude;
+        }
+        else if(template.isHotel){
+          template.currentZoom = template.options.hotelZoom;
+          template.currentLatitude = template.day.hotelLatitude;
+          template.currentLongitude = template.day.hotelLongitude;
+        }
+        else if(template.isFeature){
+          template.currentZoom = template.options.featureZoom;
+          template.currentLatitude = template.feature.latitude;
+          template.currentLongitude = template.feature.longitude;
+        }
+        else if(template.isNearby){
+          template.currentZoom = template.options.featureZoom;
+          template.currentLatitude = template.nearby.latitude;
+          template.currentLongitude = template.nearby.longitude;
+        }
       }
       template.state="home";
       template.update();
@@ -120,13 +148,15 @@
       };
       template.dayClick = function(){
         template.state="day";
+        template.day = template.days[Math.floor((template.currentDayIndex)/3)];
+        template.dayTitle="Day "+template.day.day+" - Other";
         template.update();
-        template.dayTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" - Other";
       };
       template.hotelClick = function(){
         template.state="hotel";
+        template.day = template.days[Math.floor((template.currentDayIndex)/3)];
+        template.hotelTitle="Day "+template.day.day+" Hotel";
         template.update();
-        template.hotelTitle="Day "+template.days[Math.floor((template.currentDayIndex)/3)].day+" Hotel";
       };
       template.dayFeatureClick = function(){
         if(template.state=="day"){
@@ -146,8 +176,8 @@
           template.state="featureFromHotel";
         }
         template.feature=template.features[template.currentFeatureIndex-1];
+        
         template.update();
-        console.log(template.feature);
       };
       template.hotelNearbyClick = function(){
         if(template.state=="day"){
@@ -156,17 +186,16 @@
         else{
           template.state="nearbyFromHotel";
         }
-        template.nearby=template.features[template.currentFeatureIndex-template.features.length-2];
+        template.nearby=template.nearbys[template.currentFeatureIndex-template.features.length-2];
         template.update();
       };
       
     </script>
     
     <google-map
-      map="{{map}}"
-      latitude="[[GetFeatureLatitudeByIndex(currentFeatureIndex)]]" 
-      longitude="[[GetFeatureLongitudeByIndex(currentFeatureIndex)]]" 
-      zoom="13">
+      latitude="[[currentLatitude]]" 
+      longitude="[[currentLongitude]]" 
+      zoom="[[currentZoom]]">
       <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
         <google-map-marker
           latitude="{{feature.latitude}}" 
