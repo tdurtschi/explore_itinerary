@@ -13,7 +13,13 @@ namespace CollabatronMaps2015.Controllers
     public class RecommendationController : ApiController
     {
 
-        [HttpGet]
+        public JsonResult<List<RecommendedLocation>> getAllRecommendations()
+        {
+            var returnList = new DataAccessManager().GetAllRecomendedLocations();
+            return Json(returnList);
+        }
+            
+            [HttpGet]
         public JsonResult<List<RecommendedLocation>> GetRecommendation(string id)
         {
             var returnList = new DataAccessManager().GetRecomendedLocations(id);

@@ -339,7 +339,6 @@ WHERE s.SupplierCode = '{0}'
             }
         }
 
-
         public TourComponent GetTourComponentForSpecificDay(int prodTourId, int dayOfTour)
         {
             if (dayOfTour > 0)
@@ -378,6 +377,14 @@ WHERE s.SupplierCode = '{0}'
             var result = _allRecomendedLocations
                 .Where(l => l.SupplierCode.Trim().ToUpper() == supplierCode.Trim().ToUpper())
                 .ToList();
+            return result;
+        }
+
+
+        public List<RecommendedLocation> GetAllRecomendedLocations()
+        {
+
+            var result = _allRecomendedLocations;
             return result;
         }
 

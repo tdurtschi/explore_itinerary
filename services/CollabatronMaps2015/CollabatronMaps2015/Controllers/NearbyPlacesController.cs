@@ -25,7 +25,7 @@ namespace CollabatronMaps2015.Controllers
             {
                 var deet = mgr.GetPlaceDetails(n.PlaceId);
                 var gc = new GoogleComponent();
-                gc.Address = deet.Result.FormattedAddress;
+                gc.Address = deet.Result != null ? deet.Result.FormattedAddress : "12 MadeUp St.";
                 gc.Latitude = n.Geometry.Location.Latitude;
                 gc.Longitude = n.Geometry.Location.Longitude;
                 gc.Name = n.Name;
