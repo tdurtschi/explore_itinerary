@@ -29,7 +29,8 @@ a.EndDate,
 sa.Latitude,
 sa.Longitude,
 pc.StartDay,
-pc.Duration
+pc.Duration,
+pt.TourCode
 FROM Production_ProdTour_v pt
 INNER JOIN Production_ProdComponent_v pc
 	ON pt.ProdTour_id = pc.ProdTour_id
@@ -51,7 +52,10 @@ and
 pt.ProdTour_id = {0}
 AND
 pc.CompTypeCode = 'HO'
+AND sa.Latitude IS NOT NULL
+AND sa.Longitude IS NOT NULL
             ";
+
 
         private List<RecommendedLocation> _allRecomendedLocations;
 
@@ -283,6 +287,7 @@ pc.CompTypeCode = 'HO'
                         component.Longitude = reader.GetDouble(14);
                         component.StartDay = reader.GetInt32(15);
                         component.Duration = reader.GetDecimal(16);
+                        component.TourCode = reader.GetString(17);
 
                         result.Add(component);
                     }
@@ -292,6 +297,66 @@ pc.CompTypeCode = 'HO'
             }
         }
 
+
+        public TourComponent GetTourComponentForSpecificDay(int prodTourId, int dayOfTour)
+        {
+            if (dayOfTour > 0)
+            {
+
+                var result = new List<TourComponent>();
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+                    cmd.CommandText = string.Format(_getTourComponentsQuery, prodTourId);
+
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var component = new TourComponent();
+
+                            component.Id = reader.GetInt32(0);
+                            component.Name = reader.GetString(1).Trim();
+                            component.ComponentType = reader.GetString(2).Trim();
+                            component.SupplierCode = reader.GetString(3).Trim();
+
+                            component.Address = buildAddress(reader);
+                            component.StartDate = reader.GetDateTime(11);
+                            component.EndDate = reader.GetDateTime(12);
+                            component.Latitude = reader.GetDouble(13);
+                            component.Longitude = reader.GetDouble(14);
+                            component.StartDay = reader.GetInt32(15);
+                            component.Duration = reader.GetDecimal(16);
+                            component.TourCode = reader.GetString(17);
+
+                            result.Add(component);
+                        }
+                    }
+                }
+                var exactComponent = GetExactComponentByTourDay(dayOfTour, result);
+
+                return exactComponent;
+            }
+            else return new TourComponent();
+        }
+
+        private TourComponent GetExactComponentByTourDay(int dayOfTour, List<TourComponent> components)
+        {
+            
+            components = components.OrderBy(x => x.StartDay).ToList();
+
+
+            foreach (var tourComponent in components)
+            {
+                if (dayOfTour == tourComponent.StartDay || dayOfTour < tourComponent.StartDay)
+                {
+                    return tourComponent;
+                }
+            }
+            return new TourComponent();
+        }
         public List<RecommendedLocation> GetRecomendedLocations(string supplierCode)
         {
             if (string.IsNullOrWhiteSpace(supplierCode))

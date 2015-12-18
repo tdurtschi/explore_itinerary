@@ -15,5 +15,6 @@ namespace Colabatron.DataAccess
         public double Longitude { get; set; }
         public int StartDay { get; set; }
         public decimal Duration { get; set; }
+        public string TourCode { get; set; }
     }
 }

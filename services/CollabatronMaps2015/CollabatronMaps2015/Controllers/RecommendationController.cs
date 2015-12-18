@@ -12,19 +12,8 @@ namespace CollabatronMaps2015.Controllers
 {
     public class RecommendationController : ApiController
     {
-        //Recomendation[] recs = new Recomendation[]
-        //{
-        //    new Recomendation{RecomendationCode = "asd"},
-        //    new Recomendation{RecomendationCode = "asdf"},
-        //    new Recomendation{RecomendationCode = "jkl"}
-        //};
-        //public JsonResult<List<RecommendedLocation>> GetAllRecommendations()
-        //{
-        //    return Json(recs);
-        //}
 
         [HttpGet]
-        //[Route("desc/{id}")]
         public JsonResult<List<RecommendedLocation>> GetRecommendation(string id)
         {
             var returnList = new DataAccessManager().GetRecomendedLocations(id);

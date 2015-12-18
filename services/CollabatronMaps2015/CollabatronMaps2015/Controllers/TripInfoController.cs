@@ -13,12 +13,6 @@ namespace CollabatronMaps2015.Controllers
     //[RoutePrefix("api/TripInfo")]
     public class TripInfoController : ApiController
     {
-      
-        //public JsonResult<Trip[]> GetAllTrips()
-        //{
-        //    //return Json(trips);
-        //}
-
 
         public JsonResult<List<TourComponent>> GetTrip(int id)
         {
@@ -26,19 +20,6 @@ namespace CollabatronMaps2015.Controllers
             var returnList = mgr.GetTourComponents(id);
             return Json(returnList);
         }
-
-        //[HttpGet]
-        ////[Route("desc/{desc}")]
-        //public JsonResult<Trip> GetTrip(string desc)
-        //{
-        //    var trip = trips.FirstOrDefault(p => p.desc == desc);
-        //    if (trip == null)
-        //    {
-        //        return Json<Trip>(null);
-        //    }
-        //    return Json(trip);
-        //} 
-
 
     }
 }
