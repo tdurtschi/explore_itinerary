@@ -13,8 +13,12 @@ namespace CollabatronMaps2015.Controllers
     {
         public JsonResult<List<GoogleComponent>> GetNearbyPlaces(string id)
         {
+            var dataAccessManager = new DataAccessManager();
+            Tuple<double, double> hotelLatLong = dataAccessManager.GetHotelLocation(id);
+
             var mgr = new GoogleMapsAccess();
-            var result = mgr.GetNearbyLocations(46.71801, -71.29896);
+            var result = mgr.GetNearbyLocations(hotelLatLong.Item1, hotelLatLong.Item2);
+
             var returnList = new List<GoogleComponent>();
 
             foreach (var n in result.Results)

@@ -56,6 +56,15 @@ AND sa.Latitude IS NOT NULL
 AND sa.Longitude IS NOT NULL
             ";
 
+        private string _getHotelLatLonQuery = @"
+SELECT 
+a.Latitude,
+a.Longitude
+FROM dbo.Land_Supplier_v s
+INNER JOIN dbo.Land_SupplierAddress_v a
+	ON s.Supplier_id = a.Supplier_id
+WHERE s.SupplierCode = '{0}'
+    ";
 
         private List<RecommendedLocation> _allRecomendedLocations;
 
@@ -68,12 +77,12 @@ AND sa.Longitude IS NOT NULL
                 Id = 1,
                 Name = "Las Iguanas",
                 SupplierCode = "LON-03762",
-                Address="Las Iguanas, 97, London Designer Outlet, Wembley Park Blvd, Wembley, Greater London HA9 0FD, United Kingdom",
-                PrimaryCategory="Restaurant",
+                Address = "Las Iguanas, 97, London Designer Outlet, Wembley Park Blvd, Wembley, Greater London HA9 0FD, United Kingdom",
+                PrimaryCategory = "Restaurant",
                 SecondaryCategory = "Latin American",
                 NumberOfRecomendations = 4,
                 Description = "Vibrant Latin American chain restaurant",
-                Hours="Open until 11:00 PM"
+                Hours = "Open until 11:00 PM"
             });
 
             _allRecomendedLocations.Add(new RecommendedLocation
@@ -293,6 +302,7 @@ AND sa.Longitude IS NOT NULL
                     }
                 }
 
+                result.Sort((c1, c2) => c1.StartDay.CompareTo(c2.StartDay));
                 return result;
             }
         }
@@ -303,7 +313,7 @@ AND sa.Longitude IS NOT NULL
             if (dayOfTour > 0)
             {
 
-                var result = GetTourComponents(prodTourId); 
+                var result = GetTourComponents(prodTourId);
                 var exactComponent = GetExactComponentByTourDay(dayOfTour, result);
 
                 return exactComponent;
@@ -313,7 +323,7 @@ AND sa.Longitude IS NOT NULL
 
         private TourComponent GetExactComponentByTourDay(int dayOfTour, List<TourComponent> components)
         {
-            
+
             components = components.OrderBy(x => x.StartDay).ToList();
 
 
@@ -330,11 +340,11 @@ AND sa.Longitude IS NOT NULL
         {
             if (string.IsNullOrWhiteSpace(supplierCode))
             {
-                throw new ArgumentNullException("supplierCode");    
+                throw new ArgumentNullException("supplierCode");
             }
 
             var result = _allRecomendedLocations
-                .Where(l=>l.SupplierCode.Trim().ToUpper() == supplierCode.Trim().ToUpper())
+                .Where(l => l.SupplierCode.Trim().ToUpper() == supplierCode.Trim().ToUpper())
                 .ToList();
             return result;
         }
@@ -373,6 +383,30 @@ AND sa.Longitude IS NOT NULL
             }
 
             return s1;
+        }
+
+        public Tuple<double, double> GetHotelLocation(string hotelSupplierCode)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = string.Format(_getHotelLatLonQuery, hotelSupplierCode);
+
+                Tuple<double, double> result = null;
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        double lat = reader.GetDouble(0);
+                        double lon = reader.GetDouble(1);
+                        result = new Tuple<double, double>(lat, lon);
+                    }
+                }
+
+                return result;
+            }
         }
     }
 }
