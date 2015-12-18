@@ -1,0 +1,44 @@
+[  
+   {  
+      "Id":12417444,
+      "Name":"Quality Suites Laval",
+      "ComponentType":"HO",
+      "SupplierCode":"YMQ-00089",
+      "Address":"CA, Laval, 2035 Autoroute des Laurentides, QC, H7S 1Z6",
+      "StartDate":"2016-06-03T00:00:00",
+      "EndDate":"2016-06-05T00:00:00",
+      "Latitude":45.56758,
+      "Longitude":-73.74075,
+      "StartDay":3,
+      "Duration":2.0,
+      "TourCode":"JCQS"
+   },
+   {  
+      "Id":12417456,
+      "Name":"Quality Suites Laval",
+      "ComponentType":"HO",
+      "SupplierCode":"YMQ-00089",
+      "Address":"CA, Laval, 2035 Autoroute des Laurentides, QC, H7S 1Z6",
+      "StartDate":"2016-06-05T00:00:00",
+      "EndDate":"2016-06-06T00:00:00",
+      "Latitude":45.56758,
+      "Longitude":-73.74075,
+      "StartDay":5,
+      "Duration":1.0,
+      "TourCode":"JCQS"
+   },
+   {  
+      "Id":12417421,
+      "Name":"Comfort Inn & Suites Quebec",
+      "ComponentType":"HO",
+      "SupplierCode":"QUEB-00223",
+      "Address":"CA, St. Nicolas, 495 route du Pont, QC, G7A 2N9",
+      "StartDate":"2016-06-01T00:00:00",
+      "EndDate":"2016-06-03T00:00:00",
+      "Latitude":46.71801,
+      "Longitude":-71.29896,
+      "StartDay":1,
+      "Duration":2.0,
+      "TourCode":"JCQS"
+   }
+]

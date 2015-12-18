@@ -19,6 +19,12 @@ paper-item {
   border-bottom: 1px solid #DDD;
   padding-left:8px;
 }
+
+.recommended-item {
+  margin-top:8px;
+  border-bottom: 1px solid #000;
+}
+
 paper-tab iron-icon {
   margin-right: 10px;
 }

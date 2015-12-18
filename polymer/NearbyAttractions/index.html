@@ -88,7 +88,8 @@
 
 <body unresolved>
   <template id="app-data" is="dom-bind">
-    <iron-ajax url="recommendations.json" last-response="{{recommendations}}" auto></iron-ajax>
+    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/TripInfo/165470" last-response="{{hotels}}" on-response="handleHotels" auto></iron-ajax>
+    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/Recommendation/LON-03762" last-response="{{recommendations}}" auto></iron-ajax>
     <script>
       var template = document.querySelector('#app-data');
       template.options = {nearbyRadius:5000,homeZoom:10,dayZoom:11,hotelZoom:12,featureZoom:14};
@@ -285,8 +286,8 @@
         <div class="content">
           <template is="dom-if" if="{{isHome}}">
             <paper-listbox selected="{{currentDayIndex}}">
-              <template is="dom-repeat" items="{{days}}" as="day" index-as="i">
-                <iron-label class="textLg">Day - {{day.day}}</iron-label>
+              <template is="dom-repeat" items="{{hotels}}" as="hotel" index-as="i">
+                <iron-label class="textLg">Day {{hotel.StartDay}}: {{hotel.Name}}</iron-label>
                 <paper-item on-click="hotelClick">
                   <iron-icon icon="maps:local-hotel"></iron-icon>
                   <iron-label>Near Your Hotel</iron-label>
@@ -301,7 +302,7 @@
           <template is="dom-if" if="{{isDay}}">
             <paper-listbox selected="{{currentFeatureIndex}}" on-click="dayFeatureClick">
               <template is="dom-repeat" items="{{recommendations}}" as="feature" index-as="i">
-                <paper-item>
+                <paper-item class="recommended-item">
                   
                   <div class="item">
                     <div class="item-title">
