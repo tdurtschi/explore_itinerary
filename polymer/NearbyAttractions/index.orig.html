@@ -9,11 +9,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-  <script src="bower_components/jQuery/dist/jquery.min.js"></script>
-  <script src="main.js"></script>
-  <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
   <link rel="import" href="bower_components/iron-image/iron-image.html">
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
   <link rel="import" href="bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="bower_components/iron-icons/maps-icons.html">
   <link rel="import" href="bower_components/paper-item/paper-item.html">
@@ -56,6 +54,9 @@
       height:100%;
     }
 
+    .content{
+      margin-left:5px;
+    }
 
     .item {
       @apply(--layout-vertical);
@@ -65,7 +66,6 @@
 
     .item-title{
       border-bottom:1px solid #ccc;  
-      line-height:30px;
     }
     
     .name {
@@ -75,25 +75,34 @@
     .recommendation {
       text-align:right;
       font-size:11px;
-      line-height:15px;
     }
 
     .hours {
       font-size:11px;
       font-style:italic;
-      line-height:15px;
     }
+
+
   </style>
 </head>
 
 <body unresolved>
   <template id="app-data" is="dom-bind">
+    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/TripInfo/165470" last-response="{{hotels}}" on-response="handleHotels" auto></iron-ajax>
+    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/Recommendation/LON-03762" last-response="{{recommendations}}" auto></iron-ajax>
     <script>
       var template = document.querySelector('#app-data');
-      template.options = {nearbyRadius:5000,homeZoom:8,dayZoom:11,hotelZoom:12,featureZoom:14};
-      template.homebase = {latitude:"51.5588",longitude:"-0.2849466"};
-      template.prodId = "146586"
-      template.days = [];
+      template.options = {nearbyRadius:5000,homeZoom:10,dayZoom:11,hotelZoom:12,featureZoom:14};
+      template.homebase = {latitude:"37.779",longitude:"-122.3892"};
+      template.prodId = "165470"
+      template.days = [
+        {day:1,supplierCode:"LON-03762",hotelLatitude:"38.729",hotelLongitude:"-124.3534",dayLatitude:"38.729",dayLongitude:"-124.3534"},
+        {day:2,supplierCode:"LON-03762",hotelLatitude:"38.739",hotelLongitude:"-124.3544",dayLatitude:"37.729",dayLongitude:"-124.3534"},
+        {day:3,supplierCode:"PAR-01603",hotelLatitude:"38.749",hotelLongitude:"-124.3554",dayLatitude:"36.729",dayLongitude:"-124.3534"},
+        {day:4,supplierCode:"PAR-01603",hotelLatitude:"38.759",hotelLongitude:"-124.3564",dayLatitude:"35.729",dayLongitude:"-124.3534"},
+        {day:5,supplierCode:"FLR-00163",hotelLatitude:"38.769",hotelLongitude:"-124.3574",dayLatitude:"34.729",dayLongitude:"-124.3534"},
+        {day:6,supplierCode:"ROM-00580",hotelLatitude:"38.779",hotelLongitude:"-124.3584",dayLatitude:"33.729",dayLongitude:"-124.3534"},
+        {day:7,supplierCode:"ROM-00580",hotelLatitude:"38.789",hotelLongitude:"-124.3594",dayLatitude:"32.729",dayLongitude:"-124.3534"}];
       template.homeTitle="Explore Your Tour";
       //this will need to get set by a service call
       template.features = [
@@ -106,25 +115,79 @@
         {name:"clothingStore"},
         {name:"pharmacy2"},
         {name:"chain resturant"}]
+      /*
+      template.GetFeatureLatitudeByIndex=function(i){
+        if(i){
+          return template.features[i].latitude;
+        }
+        else{
+          return template.homebase.latitude;
+        }
+      };
+      template.GetFeatureLongitudeByIndex=function(i){
+        if(i){
+          return template.features[i].longitude;    
+        }
+        else{
+          return template.homebase.longitude;
+        }
+      };
+      */
+      template.update= function(){
         
+        template.isHome= template.state == "home";
+        template.isDay= template.state == "day";
+        template.isHotel= template.state == "hotel";
+        template.isFeature= template.state == "featureFromHotel" ||template.state == "featureFromDay";
+        template.isFeatureWasHotel= template.state == "featureFromHotel";
+        template.isFeatureWasDay= template.state == "featureFromDay";
+        template.isNearby= template.state == "nearbyFromHotel" ||template.state == "nearbyFromDay";
+        template.isNearbyWasHotel= template.state == "nearbyFromHotel";
+        template.isNearbyWasDay= template.state == "nearbyFromDay";
+        if(template.isHome){
+          template.currentZoom = template.options.homeZoom;
+          template.currentLatitude = template.homebase.latitude;
+          template.currentLongitude = template.homebase.longitude;
+        }
+        else if(template.isDay){
+          template.currentZoom = template.options.dayZoom;
+          template.currentLatitude = template.day.dayLatitude;
+          template.currentLongitude = template.day.dayLongitude;
+        }
+        else if(template.isHotel){
+          template.currentZoom = template.options.hotelZoom;
+          template.currentLatitude = template.day.hotelLatitude;
+          template.currentLongitude = template.day.hotelLongitude;
+        }
+        else if(template.isFeature){
+          template.currentZoom = template.options.featureZoom;
+          template.currentLatitude = template.feature.latitude;
+          template.currentLongitude = template.feature.longitude;
+        }
+        else if(template.isNearby){
+          template.currentZoom = template.options.featureZoom;
+          template.currentLatitude = template.nearby.latitude;
+          template.currentLongitude = template.nearby.longitude;
+        }
+      }
       template.state="home";
-      updateState(template);
+      template.update();
       
       template.homeClick = function(){
         template.state="home"
-      updateState(template);
+        template.update();
       };
       template.dayClick = function(){
         template.state="day";
         template.day = template.days[Math.floor((template.currentDayIndex)/3)];
         template.dayTitle="Day "+template.day.day+" - Other";
-        updateState(template);
+        template.update();
       };
       template.hotelClick = function(){
         template.state="hotel";
         template.day = template.days[Math.floor((template.currentDayIndex)/3)];
         template.hotelTitle="Day "+template.day.day+" Hotel";
-        updateState(template);
+        template.update();
       };
       template.dayFeatureClick = function(){
         if(template.state=="day"){
@@ -134,7 +197,7 @@
           template.state="featureFromHotel";
         }
         template.feature=template.features[template.currentFeatureIndex];
-        updateState(template);
+        template.update();
       };
       template.hotelFeatureClick = function(){
         if(template.state=="day"){
@@ -144,7 +207,8 @@
           template.state="featureFromHotel";
         }
         template.feature=template.features[template.currentFeatureIndex-1];
-        updateState(template);
+        
+        template.update();
       };
       template.hotelNearbyClick = function(){
         if(template.state=="day"){
@@ -154,95 +218,52 @@
           template.state="nearbyFromHotel";
         }
         template.nearby=template.nearbys[template.currentFeatureIndex-template.features.length-2];
-        updateState(template);
+        template.update();
       };
-      template.handleTripInfo = function(data){
-        //console.log('handler');
-        //loadDays(template.tripInfoResponse,template);
-        //console.log(template.days);
-      }
-      template.loadDays = function(data){
-        console.log('data:');
-        console.log(data);
-        data.sort(function(a,b){ return a.StartDay-b.StartDay;});
-        console.log(data);
-        template.days.length=0;
-        var diffDays = data[data.length-1].StartDay + data[data.length-1].Duration; 
-        console.log(diffDays);
-        for(var d=0;d<diffDays;d++){
-          for(var i=0;i<data.length;i++){
-            if(d+1 >= data[i].StartDay && d+1 < (data[i].StartDay+data[i].Duration))
-            {
-              template.days.push({hotel:data[i],day:d+1});
-              break;
-            }
-          }
-        }
-        return template.days;
-      }
-      template.loadHotelNearbys = function(data){
-        console.log('hotel nearby');
-        template.nearbys=data;
-        console.log(data);
-        return data;
-      }
-      template.loadDayFeatures = function(data){
-        console.log('hotel features')
-        template.features=data;
-        console.log(data);
-        return data;
-      }
-      template.loadHotelFeatures = function(data){
-        console.log('hotel features')
-        template.features=data;
-        console.log(data);
-        return data;
-      }
+      
       template.isRestaurant = function(category){
         if (category == 'Restaurant'){
           return true;
         }
         return false;
       }
+
     </script>
-    <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/TripInfo/{{prodId}}" last-response="{{tripInfoResponse}}" auto></iron-ajax>
+    
     <google-map
       latitude="[[currentLatitude]]" 
       longitude="[[currentLongitude]]" 
       zoom="[[currentZoom]]">
-      <template is="dom-repeat" items="{{loadHotelNearbys(hotelNearResponse)}}" as="feature" index-as="i">
+      <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
         <google-map-marker
-          latitude="{{feature.Latitude}}" 
-          longitude="{{feature.Longitude}}"
-          title="{{feature.Name}}"
+          latitude="{{feature.latitude}}" 
+          longitude="{{feature.longitude}}"
+          title="{{feature.name}}"
           draggable="false"></google-map-marker>
       </template>
-      <template is="dom-repeat" items="{{loadHotelFeatures(hotelRecResponse)}}" as="feature" index-as="i">
-        <google-map-marker
-          latitude="{{feature.Latitude}}" 
-          longitude="{{feature.Longitude}}"
-          title="{{feature.Name}}"
-          draggable="false"></google-map-marker>
-      </template>
+      <template is="dom-repeat" items="{{results}}" as="marker">
+        <google-map-marker latitude="{{marker.latitude}}"
+                         longitude="{{marker.longitude}}">
+        <h2>{{marker.name}}</h2>
+        <span>{{marker.formatted_address}}</span>
+      </google-map-marker>
+    </template>
     </google-map>
     <!-- inputs -->
     
     <paper-card 
       class="featuresPanel blue"
-      elevation="5"><!--TODO - look into image header -->
+      elevation="2"><!--TODO - look into image header -->
       <paper-header-panel mode="waterfall-tall" class="blue">
         <div class="paper-header">
           <template is="dom-if" if="{{isHome}}">
             <div class="headerNormal">{{homeTitle}}</div>
           </template>
           <template is="dom-if" if="{{isDay}}">
-            <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/DayRecommendation/{{prodId}}-{{day.day}}" last-response="{{dayRecResponse}}" auto></iron-ajax>
             <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
             <div class="headerNormal">{{dayTitle}}</div>
           </template>
           <template is="dom-if" if="{{isHotel}}">
-            <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/Recommendation/{{day.hotel.SupplierCode}}" last-response="{{hotelRecResponse}}" auto></iron-ajax>
-            <iron-ajax url="http://usb-tgcollabap2:8077/CollabatronMaps2015/api/NearbyPlaces/{{day.hotel.SupplierCode}}" last-response="{{hotelNearResponse}}" auto></iron-ajax>
             <paper-button raised on-click="homeClick" class="buttonSm headerSm"><iron-icon icon="icons:arrow-back" class="iconSm"></iron-icon>{{homeTitle}}</paper-button>
             <div class="headerNormal">{{hotelTitle}}</div>
           </template>
@@ -264,11 +285,11 @@
         <div class="content">
           <template is="dom-if" if="{{isHome}}">
             <paper-listbox selected="{{currentDayIndex}}">
-              <template id="dayRepeat" is="dom-repeat" items="{{loadDays(tripInfoResponse)}}" as="day" index-as="i">
-                <iron-label class="textLg">Day - {{day.day}}</iron-label>
+              <template is="dom-repeat" items="{{hotels}}" as="hotel" index-as="i">
+                <iron-label class="textLg">Day {{hotel.StartDay}}: {{hotel.Name}}</iron-label>
                 <paper-item on-click="hotelClick">
                   <iron-icon icon="maps:local-hotel"></iron-icon>
-                  <iron-label>Near - {{day.hotel.Name}}</iron-label>
+                  <iron-label>Near Your Hotel</iron-label>
                 </paper-item>
                 <paper-item on-click="dayClick">
                   <iron-icon icon="maps:local-activity"></iron-icon>
@@ -279,8 +300,9 @@
           </template>
           <template is="dom-if" if="{{isDay}}">
             <paper-listbox selected="{{currentFeatureIndex}}" on-click="dayFeatureClick">
-              <template is="dom-repeat" items="{{loadDayFeatures(dayRecResponse)}}" as="feature" index-as="i">
-                <paper-item class="bigLine">
+              <template is="dom-repeat" items="{{recommendations}}" as="feature" index-as="i">
+                <paper-item class="recommended-item">
+                  
                   <div class="item">
                     <div class="item-title">
                       <span>
@@ -297,46 +319,29 @@
                     <div class="description">[[feature.Description]]</div>
                     <div class="hours">[[feature.Hours]]</div>
                   </div>
-               </paper-item>
+                  </paper-item>
               </template>
             </paper-listbox>
           </template>
           <template is="dom-if" if="{{isHotel}}">
             <paper-listbox selected="{{currentFeatureIndex}}">
-              <div><iron-label class="textLg">EF Recomendations</iron-label></div>
-              <template is="dom-repeat" items="{{loadHotelFeatures(hotelRecResponse)}}" as="feature" index-as="i">
+              <iron-label class="textLg">EF Recomendations</iron-label>
+              <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
                 <paper-item on-click="hotelFeatureClick" class="bigLine">
-                  <div class="item">
-                    <div class="item-title">
-                      <span>
-                        <template is="dom-if" if="[[isRestaurant(feature.PrimaryCategory)]]">
-                          <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-                        </template>
-                        <template is="dom-if" if="[[!isRestaurant(feature.PrimaryCategory)]]">
-                          <iron-icon icon="maps:place" item-icon></iron-icon>
-                        </template>
-                      </span>
-                      <span class="name">[[feature.Name]]</span>
-                      <span class="recommendation">[[feature.NumberOfRecomendations]] recommendations</span>
-                    </div>
-                    <div class="description">[[feature.Description]]</div>
-                    <div class="hours">[[feature.Hours]]</div>
-                  </div>
+                  <template is="dom-if" if="{{feature.category}}">
+                    <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
+                  </template>
+                  <template is="dom-if" if="{{!feature.category}}">
+                    <iron-icon icon="maps:place" item-icon></iron-icon>
+                  </template>
+                  <iron-label>{{feature.name}}</iron-label>
                </paper-item>
               </template>
-              <div><iron-label class="textLg">Nearby Results</iron-label></div>
-              <template is="dom-repeat" items="{{loadHotelNearbys(hotelNearResponse)}}" as="nearby" index-as="i">
+              <iron-label class="textLg">Nearby Results</iron-label>
+              <template is="dom-repeat" items="{{nearbys}}" as="nearby" index-as="i">
                 <paper-item on-click="hotelNearbyClick" class="bigLine">
-                  <div class="item">
-                    <div class="item-title">
-                      <span>
-                        <iron-img class="full-height" src="{{nearby.Icon}}"></iron-img>
-                      </span>
-                      <span class="name">[[nearby.Name]]</span>
-                    </div>
-                    <div class="description">[[feature.Description]]</div>
-                    <div class="hours">[[feature.Hours]]</div>
-                  </div>
+                  <iron-icon icon="maps:place" item-icon></iron-icon>
+                  <iron-label>{{nearby.name}}</iron-label>
                </paper-item>
               </template>
             </paper-listbox>

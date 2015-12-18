@@ -16,7 +16,7 @@ paper-card.blue {
   background: white;/*linear-gradient(white, #107db4);*/
 }
 paper-item {
-  border-bottom: 1px solid #DDD;
+  border-bottom: 3px solid #DDD;
   padding-left:8px;
 }
 
