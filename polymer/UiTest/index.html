@@ -10,6 +10,7 @@
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
   <link rel="import" href="bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="bower_components/paper-item/paper-item.html">
   <link rel="import" href="bower_components/paper-item/paper-icon-item.html">
@@ -34,6 +35,38 @@
     paper-card {
       --paper-card-header-color: #ec008c
     }
+    
+    paper-item {
+      border-bottom: 1px solid #222;
+    }
+
+    .featuresPanel {
+      width:25%;
+    }
+
+    .item {
+      @apply(--layout-vertical);
+      font-size:14px;
+      margin-bottom:5px;
+    }
+
+    .item-title{
+      border-bottom:1px solid #ccc;  
+    }
+    
+    .name {
+      font-weight:bold;
+    }
+
+    .recommendation {
+      text-align:right;
+      font-size:11px;
+    }
+
+    .hours {
+      font-size:11px;
+      font-style:italic;
+    }
 
   </style>
 </head>
@@ -50,6 +83,7 @@
       template.GetFeatureLatitudeByIndex=function(i){return template.features[i].latitude};
       template.GetFeatureLongitudeByIndex=function(i){return template.features[i].longitude};
     </script>
+    <iron-ajax url="recommendations.json" last-response="{{recommendations}}" auto></iron-ajax>
     <google-map
       latitude="[[GetFeatureLatitudeByIndex(currentFeatureIndex)]]" 
       longitude="[[GetFeatureLongitudeByIndex(currentFeatureIndex)]]" 
@@ -63,24 +97,25 @@
       </template>
     </google-map>
     <!-- inputs -->
-    
     <paper-card 
       class="featuresPanel"
       heading="Day1 - Hotel California"
       elevation="2"><!--TODO - look into image header -->
       <paper-listbox selected="{{currentFeatureIndex}}">
-        <template is="dom-repeat" items="{{features}}" as="feature" index-as="i">
+        <template is="dom-repeat" items="{{recommendations}}" as="item" index-as="Id">
           <paper-item>
-            <template is="dom-if" if="{{feature.category}}">
-              <iron-icon icon="maps:local-pizza" item-icon></iron-icon>
-            </template>
-            <template is="dom-if" if="{{!feature.category}}">
-              <iron-icon icon="maps:place" item-icon></iron-icon>
-            </template>
-            <iron-label>{{feature.name}}</iron-label>
+            <div class="item">
+              <div class="item-title">
+                <span class="name">[[item.Name]]</span>
+                <span class="recommendation">[[item.NumberOfRecomendations]] recommendations</span>
+              </div>
+              <div class="description">[[item.Description]]</div>
+              <div class="hours">[[item.Hours]]</div>
+            </div>
           </paper-item>
         </template>
       </paper-listbox>
+      
     </paper-card>
   </template>
 </body>
