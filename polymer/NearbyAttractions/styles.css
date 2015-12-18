@@ -17,6 +17,7 @@ paper-card.blue {
 }
 paper-item {
   border-bottom: 1px solid #DDD;
+  padding-left:8px;
 }
 paper-tab iron-icon {
   margin-right: 10px;
